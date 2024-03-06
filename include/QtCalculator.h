@@ -47,43 +47,28 @@ public slots:
 	// Операции с числами;
 	void plus()
 	{
-		if (!(lineEdit->text().isEmpty()) && !checkLine())
-		{
-			lineEdit->setText(lineEdit->text().append("+"));
-			strList = lineEdit->text().split("+");
-		}
+		if (!(lineEdit->text().isEmpty()) && !checkLine()) { lineEdit->setText(lineEdit->text().append("+")); }
 	};
 
 	void minus() 
 	{
-		if (!(lineEdit->text().isEmpty()) && !checkLine())
-		{
-			lineEdit->setText(lineEdit->text().append("-"));
-			strList = lineEdit->text().split("-");
-		}
+		if (!(lineEdit->text().isEmpty()) && !checkLine()) { lineEdit->setText(lineEdit->text().append("-")); }
 	};
 
 	void divide()
 	{
-		if (!(lineEdit->text().isEmpty()) && !checkLine())
-		{
-			lineEdit->setText(lineEdit->text().append("/"));
-			strList = lineEdit->text().split("/");
-		}
+		if (!(lineEdit->text().isEmpty()) && !checkLine()) { lineEdit->setText(lineEdit->text().append("/")); }
 	};
 
 	void multiply()
 	{
-		if (!(lineEdit->text().isEmpty()) && !checkLine())
-		{
-			lineEdit->setText(lineEdit->text().append("*"));
-			strList = lineEdit->text().split("*");
-		}
+		if (!(lineEdit->text().isEmpty()) && !checkLine()) { lineEdit->setText(lineEdit->text().append("*")); }
 	};
 
 	// Метод расчёта = ;
 	void equal()
 	{
+		strList = lineEdit->text().split("*");
 		if (!strList.empty())
 		{
 			double tempVar = 0;
