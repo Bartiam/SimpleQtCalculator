@@ -1,6 +1,5 @@
 ﻿#include <QMainWindow>
 #include <QString>
-#include <QList>
 #include <QMessageBox>
 #include <QtWidgets/QLineEdit>
 
@@ -13,7 +12,8 @@ public:
 
 	// Поле ввода.
 	QLineEdit* lineEdit;
-	QStringList lst;
+	QStringList strList;
+	bool isTrue;
 
 public slots:
 	// Удаление всех символов;
@@ -47,37 +47,69 @@ public slots:
 	// Операции с числами;
 	void plus()
 	{
-		if (!(lineEdit->text().isEmpty()) && !(lineEdit->text().endsWith("+")))
+		if (!(lineEdit->text().isEmpty()) && !checkLine())
+		{
 			lineEdit->setText(lineEdit->text().append("+"));
+			strList = lineEdit->text().split("+");
+		}
 	};
 
 	void minus() 
 	{
-		if (!(lineEdit->text().isEmpty()) && !(lineEdit->text().endsWith("-")))
+		if (!(lineEdit->text().isEmpty()) && !checkLine())
+		{
 			lineEdit->setText(lineEdit->text().append("-"));
+			strList = lineEdit->text().split("-");
+		}
 	};
 
 	void divide()
 	{
-		if (!(lineEdit->text().isEmpty()) && !(lineEdit->text().endsWith("/")))
+		if (!(lineEdit->text().isEmpty()) && !checkLine())
+		{
 			lineEdit->setText(lineEdit->text().append("/"));
+			strList = lineEdit->text().split("/");
+		}
 	};
 
 	void multiply()
 	{
-		if (!(lineEdit->text().isEmpty()) && !(lineEdit->text().endsWith("*")))
+		if (!(lineEdit->text().isEmpty()) && !checkLine())
+		{
 			lineEdit->setText(lineEdit->text().append("*"));
+			strList = lineEdit->text().split("*");
+		}
 	};
 
 	// Метод расчёта = ;
 	void equal()
 	{
-		
+		if (!strList.empty())
+		{
+			double tempVar = 0;
+			for (int i = 0; i < strList.size(); ++i)
+			{
+				tempVar += strList[i].toDouble();
+			}
+
+			lineEdit->setText(QString::number(tempVar));
+		}
 	};
 
 	// Метод ввода , ;
 	void comma()
 	{
-		if (lineEdit->text().isEmpty()) { lineEdit->setText(lineEdit->text().append("0,")); }
+		//if (lineEdit->text().isEmpty()) { lineEdit->setText(lineEdit->text().append("0,")); }
+		//else
+		{
+			strList = lineEdit->text().split("+");
+		}
 	};
+
+private:
+	bool checkLine()
+	{
+		return lineEdit->text().endsWith("+") || lineEdit->text().endsWith("*") ||
+			lineEdit->text().endsWith("-") || lineEdit->text().endsWith("/");
+	}
 };
