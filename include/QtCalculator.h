@@ -1,6 +1,6 @@
 ﻿#include <QMainWindow>
 #include <QString>
-#include <QMessageBox>
+#include <QRegExp>
 #include <QtWidgets/QLineEdit>
 
 class QtCalculator : public QMainWindow
@@ -12,89 +12,169 @@ public:
 
 	// Поле ввода.
 	QLineEdit* lineEdit;
-	QStringList strList;
-	bool isTrue;
+	
 
 public slots:
 	// Удаление всех символов;
 	void deleteLine() { lineEdit->clear(); };
+
+	// Методы ввода цифр;
+	void one() 
+	{
+		if (lineEdit->text().endsWith(")")) lineEdit->setText(lineEdit->text().append("*1"));
+		else lineEdit->setText(lineEdit->text().append("1"));
+	}
+	void two() 
+	{
+		if (lineEdit->text().endsWith(")")) lineEdit->setText(lineEdit->text().append("*2"));
+		else lineEdit->setText(lineEdit->text().append("2"));
+	}
+	void three() 
+	{ 
+		if (lineEdit->text().endsWith(")")) lineEdit->setText(lineEdit->text().append("*3"));
+		else lineEdit->setText(lineEdit->text().append("3"));
+	}
+	void four() 
+	{
+		if (lineEdit->text().endsWith(")")) lineEdit->setText(lineEdit->text().append("*4"));
+		else lineEdit->setText(lineEdit->text().append("4"));
+	}
+	void five()
+	{
+		if (lineEdit->text().endsWith(")")) lineEdit->setText(lineEdit->text().append("*5"));
+		else lineEdit->setText(lineEdit->text().append("5"));
+	}
+	void six()
+	{
+		if (lineEdit->text().endsWith(")")) lineEdit->setText(lineEdit->text().append("*6"));
+		else lineEdit->setText(lineEdit->text().append("6"));
+	}
+	void seven()
+	{
+		if (lineEdit->text().endsWith(")")) lineEdit->setText(lineEdit->text().append("*7"));
+		else lineEdit->setText(lineEdit->text().append("7"));
+	}
+	void eight()
+	{
+		if (lineEdit->text().endsWith(")")) lineEdit->setText(lineEdit->text().append("*8"));
+		else lineEdit->setText(lineEdit->text().append("8"));
+	}
+	void nine() 
+	{
+		if (lineEdit->text().endsWith(")")) lineEdit->setText(lineEdit->text().append("*9"));
+		else lineEdit->setText(lineEdit->text().append("9"));
+	}
+	void zero() 
+	{
+		if (lineEdit->text().endsWith(")")) lineEdit->setText(lineEdit->text().append("*0"));
+		else lineEdit->setText(lineEdit->text().append("0"));
+	}
+
 	// Удаление последнего символа;
 	void deleteOneSymbol()
 	{
-		QString str = lineEdit->text();
-		str.chop(1);
-		lineEdit->setText(str);
-	};
-
-	// Методы ввода цифр;
-	void one() { lineEdit->setText(lineEdit->text().append("1")); }
-	void two() { lineEdit->setText(lineEdit->text().append("2")); }
-	void three() { lineEdit->setText(lineEdit->text().append("3")); }
-	void four() { lineEdit->setText(lineEdit->text().append("4")); }
-	void five() { lineEdit->setText(lineEdit->text().append("5")); }
-	void six() { lineEdit->setText(lineEdit->text().append("6")); }
-	void seven() { lineEdit->setText(lineEdit->text().append("7")); }
-	void eight() { lineEdit->setText(lineEdit->text().append("8")); }
-	void nine() { lineEdit->setText(lineEdit->text().append("9")); }
-	void zero() { lineEdit->setText(lineEdit->text().append("0")); }
-
-	// Метод ввода () ;
-	void parenthesis() 
-	{
-		
+		QString tempStr = lineEdit->text();
+		tempStr.chop(1);
+		lineEdit->setText(tempStr);
 	};
 
 	// Операции с числами;
 	void plus()
 	{
-		if (!(lineEdit->text().isEmpty()) && !checkLine()) { lineEdit->setText(lineEdit->text().append("+")); }
+		if (checkArithmetic())
+		{
+			QString tempStr = lineEdit->text();
+			tempStr.chop(1);
+			lineEdit->setText(tempStr.append("+"));
+		}
+		else if (!(lineEdit->text().isEmpty())) { lineEdit->setText(lineEdit->text().append("+")); }
 	};
 
 	void minus() 
 	{
-		if (!(lineEdit->text().isEmpty()) && !checkLine()) { lineEdit->setText(lineEdit->text().append("-")); }
+		if (checkArithmetic())
+		{
+			QString tempStr = lineEdit->text();
+			tempStr.chop(1);
+			lineEdit->setText(tempStr.append("-"));
+		}
+		else if (!(lineEdit->text().isEmpty())) { lineEdit->setText(lineEdit->text().append("-")); }
 	};
 
 	void divide()
 	{
-		if (!(lineEdit->text().isEmpty()) && !checkLine()) { lineEdit->setText(lineEdit->text().append("/")); }
+		if (checkArithmetic())
+		{
+			QString tempStr = lineEdit->text();
+			tempStr.chop(1);
+			lineEdit->setText(tempStr.append("/"));
+		}
+		else if (!(lineEdit->text().isEmpty()) && !(lineEdit->text().endsWith("("))) { lineEdit->setText(lineEdit->text().append("/")); }
 	};
 
 	void multiply()
 	{
-		if (!(lineEdit->text().isEmpty()) && !checkLine()) { lineEdit->setText(lineEdit->text().append("*")); }
+		if (checkArithmetic())
+		{
+			QString tempStr = lineEdit->text();
+			tempStr.chop(1);
+			lineEdit->setText(tempStr.append("*"));
+		}
+		else if (!(lineEdit->text().isEmpty()) && !(lineEdit->text().endsWith("(")))
+		{ lineEdit->setText(lineEdit->text().append("*")); }
 	};
 
 	// Метод расчёта = ;
 	void equal()
 	{
-		strList = lineEdit->text().split("*");
-		if (!strList.empty())
-		{
-			double tempVar = 0;
-			for (int i = 0; i < strList.size(); ++i)
-			{
-				tempVar += strList[i].toDouble();
-			}
+		
+	};
 
-			lineEdit->setText(QString::number(tempVar));
-		}
+	// Метод ввода () ;
+	void parenthesis()
+	{
+		QRegExp regex("[0-9]");
+		QString tempStr = lineEdit->text();
+		QString endSymbol;
+		if (!tempStr.isEmpty()) endSymbol = tempStr[lineEdit->text().size() - 1];
+		
+		if (rightParenthesis()) { lineEdit->setText(lineEdit->text().append(")")); }
+		else if (endSymbol.contains(regex) || endSymbol == ")") lineEdit->setText(lineEdit->text().append("*("));
+		else lineEdit->setText(lineEdit->text().append("("));
 	};
 
 	// Метод ввода , ;
 	void comma()
 	{
-		//if (lineEdit->text().isEmpty()) { lineEdit->setText(lineEdit->text().append("0,")); }
-		//else
+		if (lineEdit->text().isEmpty()) { lineEdit->setText(lineEdit->text().append("0,")); }
+		else
 		{
-			strList = lineEdit->text().split("+");
+			
 		}
 	};
 
 private:
-	bool checkLine()
+	bool checkArithmetic() const
 	{
-		return lineEdit->text().endsWith("+") || lineEdit->text().endsWith("*") ||
-			lineEdit->text().endsWith("-") || lineEdit->text().endsWith("/");
+		QRegExp regex("[\-\+\*\/]");
+		QString tempStr = lineEdit->text();
+		QString endSymbol;
+
+		if (!tempStr.isEmpty()) endSymbol = tempStr[lineEdit->text().size() - 1];
+
+		if (endSymbol.contains(regex)) return true;
+
+		return false;
+	}
+
+	bool rightParenthesis() const
+	{
+		QString tempStr = lineEdit->text();
+
+		bool isTrue = (tempStr.count("(") > tempStr.count(")")) &&
+			!(tempStr.endsWith("+") && tempStr.endsWith("-") && tempStr.endsWith("*") && tempStr.endsWith("/")) &&
+			!(tempStr.endsWith("("));
+
+		return isTrue;
 	}
 };

@@ -527,7 +527,8 @@ color: rgb(75, 193, 2);</string>
            </font>
           </property>
           <property name="styleSheet">
-           <string notr="true">color: rgb(74, 195, 8);</string>
+           <string notr="true">background-color: rgb(84, 84, 84);
+color: rgb(74, 195, 8);</string>
           </property>
           <property name="text">
            <string>⌫</string>
