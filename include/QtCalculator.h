@@ -103,11 +103,14 @@ public slots:
 
 	void divide()
 	{
-		if (checkArithmetic())
+		if (checkArithmetic() && !(lineEdit->text().endsWith("(")))
 		{
 			QString tempStr = lineEdit->text();
 			tempStr.chop(1);
-			lineEdit->setText(tempStr.append("/"));
+			lineEdit->setText(tempStr);
+			
+			if (!(lineEdit->text().endsWith("(")))
+				lineEdit->setText(tempStr.append("/"));
 		}
 		else if (!(lineEdit->text().isEmpty()) && !(lineEdit->text().endsWith("("))) { lineEdit->setText(lineEdit->text().append("/")); }
 	};
@@ -118,7 +121,10 @@ public slots:
 		{
 			QString tempStr = lineEdit->text();
 			tempStr.chop(1);
-			lineEdit->setText(tempStr.append("*"));
+			lineEdit->setText(tempStr);
+
+			if (!(lineEdit->text().endsWith("(")))
+				lineEdit->setText(tempStr.append("*"));
 		}
 		else if (!(lineEdit->text().isEmpty()) && !(lineEdit->text().endsWith("(")))
 		{ lineEdit->setText(lineEdit->text().append("*")); }
