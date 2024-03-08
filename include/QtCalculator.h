@@ -154,7 +154,7 @@ public slots:
 				tempStr.chop(2);
 				lineEdit->setText(tempStr);
 			}
-			else if (!lastStr.isEmpty() && lastStr[lastStr.length() - 1] == "%")
+			else if (!lastStr.isEmpty() && (lastStr[lastStr.length() - 1] == "%" || lastStr[lastStr.length() - 1] == ")"))
 			{
 				tempStr.append("*(-");
 			}
@@ -173,18 +173,16 @@ public slots:
 					else tempStr.append("(-" + lastStr);
 				}
 				else tempStr.append("(-");
-
-				lineEdit->setText(tempStr);
 			}
+			lineEdit->setText(tempStr);
 		}
 
 	}
 
-	// Процент ;
+	// Метод % ;
 	void percent()
 	{
-		if (!(lineEdit->text().isEmpty()))
-			lineEdit->setText(lineEdit->text().append("%"));
+
 	}
 
 	// Метод расчёта = ;
@@ -192,6 +190,12 @@ public slots:
 	{
 		
 	};
+
+	// Метод , ;
+	void comma()
+	{
+
+	}
 
 	// Метод ввода () ;
 	void parenthesis()
@@ -204,16 +208,6 @@ public slots:
 		if (rightParenthesis()) { lineEdit->setText(lineEdit->text().append(")")); }
 		else if (endSymbol.contains(regex) || endSymbol == ")") lineEdit->setText(lineEdit->text().append("*("));
 		else lineEdit->setText(lineEdit->text().append("("));
-	};
-
-	// Метод ввода . ;
-	void point()
-	{
-		if (lineEdit->text().isEmpty()) { lineEdit->setText(lineEdit->text().append("0.")); }
-		else
-		{
-			
-		}
 	};
 
 private:
