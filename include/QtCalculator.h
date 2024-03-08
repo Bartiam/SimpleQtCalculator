@@ -146,15 +146,20 @@ public slots:
 			QRegExp regexVar("[0-9]");
 			QString tempStr = lineEdit->text();
 
+			QStringList tempLst = tempStr.split(regex);
+			QString lastStr = tempLst[tempLst.size() - 1];
+
 			if (tempStr.right(2) == "(-") 
 			{
 				tempStr.chop(2);
 				lineEdit->setText(tempStr);
 			}
+			else if (!lastStr.isEmpty() && lastStr[lastStr.length() - 1] == "%")
+			{
+				tempStr.append("*(-");
+			}
 			else
 			{
-				QStringList tempLst = tempStr.split(regex);
-				QString lastStr = tempLst[tempLst.size() - 1];
 
 				if (lastStr.contains(regexVar))
 				{
@@ -167,10 +172,6 @@ public slots:
 					}
 					else tempStr.append("(-" + lastStr);
 				}
-				else if (!lastStr.isEmpty() && lastStr[lastStr.length() - 1] == "%")
-				{
-					tempStr.append("*(-");
-				}
 				else tempStr.append("(-");
 
 				lineEdit->setText(tempStr);
@@ -182,7 +183,8 @@ public slots:
 	// Процент ;
 	void percent()
 	{
-		lineEdit->setText(lineEdit->text().append("%"));
+		if (!(lineEdit->text().isEmpty()))
+			lineEdit->setText(lineEdit->text().append("%"));
 	}
 
 	// Метод расчёта = ;
@@ -204,10 +206,10 @@ public slots:
 		else lineEdit->setText(lineEdit->text().append("("));
 	};
 
-	// Метод ввода , ;
-	void comma()
+	// Метод ввода . ;
+	void point()
 	{
-		if (lineEdit->text().isEmpty()) { lineEdit->setText(lineEdit->text().append("0,")); }
+		if (lineEdit->text().isEmpty()) { lineEdit->setText(lineEdit->text().append("0.")); }
 		else
 		{
 			
