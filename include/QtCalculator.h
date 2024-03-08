@@ -87,7 +87,8 @@ public slots:
 			tempStr.chop(1);
 			lineEdit->setText(tempStr.append("+"));
 		}
-		else if (!(lineEdit->text().isEmpty())) { lineEdit->setText(lineEdit->text().append("+")); }
+		else if (!(lineEdit->text().isEmpty()))
+		{ lineEdit->setText(lineEdit->text().append("+")); }
 	};
 
 	void minus() 
@@ -98,7 +99,8 @@ public slots:
 			tempStr.chop(1);
 			lineEdit->setText(tempStr.append("-"));
 		}
-		else if (!(lineEdit->text().isEmpty())) { lineEdit->setText(lineEdit->text().append("-")); }
+		else if (!(lineEdit->text().isEmpty()))
+		{ lineEdit->setText(lineEdit->text().append("-")); }
 	};
 
 	void divide()
@@ -112,7 +114,8 @@ public slots:
 			if (!(lineEdit->text().endsWith("(")))
 				lineEdit->setText(tempStr.append("/"));
 		}
-		else if (!(lineEdit->text().isEmpty()) && !(lineEdit->text().endsWith("("))) { lineEdit->setText(lineEdit->text().append("/")); }
+		else if (!(lineEdit->text().isEmpty()) && !(lineEdit->text().endsWith("(")))
+		{ lineEdit->setText(lineEdit->text().append("/")); }
 	};
 
 	void multiply()
@@ -129,6 +132,58 @@ public slots:
 		else if (!(lineEdit->text().isEmpty()) && !(lineEdit->text().endsWith("(")))
 		{ lineEdit->setText(lineEdit->text().append("*")); }
 	};
+
+	// Метод отрицательного числа +/- ;
+	void plusMinus()
+	{
+		if (lineEdit->text().isEmpty())
+		{
+			lineEdit->setText(lineEdit->text().append("(-"));
+		}
+		else
+		{
+			QRegExp regex("[\+\/\*\-]");
+			QRegExp regexVar("[0-9]");
+			QString tempStr = lineEdit->text();
+
+			if (tempStr.right(2) == "(-") 
+			{
+				tempStr.chop(2);
+				lineEdit->setText(tempStr);
+			}
+			else
+			{
+				QStringList tempLst = tempStr.split(regex);
+				QString lastStr = tempLst[tempLst.size() - 1];
+
+				if (lastStr.contains(regexVar))
+				{
+					tempStr.chop(lastStr.length());
+					if (tempStr.right(2) == "(-")
+					{
+						tempStr.chop(2);
+						lineEdit->setText(tempStr);
+						tempStr.append(lastStr);
+					}
+					else tempStr.append("(-" + lastStr);
+				}
+				else if (!lastStr.isEmpty() && lastStr[lastStr.length() - 1] == "%")
+				{
+					tempStr.append("*(-");
+				}
+				else tempStr.append("(-");
+
+				lineEdit->setText(tempStr);
+			}
+		}
+
+	}
+
+	// Процент ;
+	void percent()
+	{
+		lineEdit->setText(lineEdit->text().append("%"));
+	}
 
 	// Метод расчёта = ;
 	void equal()
