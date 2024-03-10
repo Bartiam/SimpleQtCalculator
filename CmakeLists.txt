@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.27.4)
 
-set(PROJECT_NAME SimpleQtCalculator)
+set(SimpleQtCalculator SimpleQtCalculator)
 set(MY_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-project(${PROJECT_NAME})
+project(SimpleQtCalculator)
 
 find_package(Qt5 COMPONENTS
 	Core
@@ -16,7 +16,7 @@ find_package(Qt5 COMPONENTS
 	REQUIRED)
 
 add_subdirectory(src)
-target_link_libraries(${PROJECT_NAME} 
+target_link_libraries(SimpleQtCalculator
 	Qt5::Core
 	Qt5::Gui
 	Qt5::Widgets)

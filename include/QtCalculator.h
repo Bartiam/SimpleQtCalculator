@@ -2,6 +2,7 @@
 #include <QString>
 #include <QRegExp>
 #include <QtWidgets/QLineEdit>
+#include <iostream>
 
 class QtCalculator : public QMainWindow
 {
@@ -179,22 +180,30 @@ public slots:
 
 	}
 
-	// Метод % ;
-	void percent()
-	{
-
-	}
-
 	// Метод расчёта = ;
 	void equal()
 	{
-		
+		std::cout << 9 * (((((+69))))) << std::endl;
 	};
 
 	// Метод , ;
-	void comma()
+	void point()
 	{
+		if (lineEdit->text().isEmpty() || lineEdit->text().endsWith("-") || lineEdit->text().endsWith("(") ||
+			lineEdit->text().endsWith("+") || lineEdit->text().endsWith("*") || lineEdit->text().endsWith("/"))
+		{
+			lineEdit->setText(lineEdit->text().append("0."));
+		}
+		else if (lineEdit->text().endsWith(")"))
+			lineEdit->setText(lineEdit->text().append("*0."));
+		else
+		{
+			QRegExp regex("[\+\/\*\-]");
+			QStringList tempLst = lineEdit->text().split(regex);
 
+			if (!(tempLst[tempLst.size() - 1].contains(".")))
+				lineEdit->setText(lineEdit->text().append("."));
+		}
 	}
 
 	// Метод ввода () ;
@@ -206,7 +215,7 @@ public slots:
 		if (!tempStr.isEmpty()) endSymbol = tempStr[lineEdit->text().size() - 1];
 		
 		if (rightParenthesis()) { lineEdit->setText(lineEdit->text().append(")")); }
-		else if (endSymbol.contains(regex) || endSymbol == ")") lineEdit->setText(lineEdit->text().append("*("));
+		else if (endSymbol.contains(regex) || endSymbol == ")" || endSymbol == ".") lineEdit->setText(lineEdit->text().append("*("));
 		else lineEdit->setText(lineEdit->text().append("("));
 	};
 
@@ -229,7 +238,7 @@ private:
 		QString tempStr = lineEdit->text();
 
 		bool isTrue = (tempStr.count("(") > tempStr.count(")")) &&
-			!(tempStr.endsWith("+") && tempStr.endsWith("-") && tempStr.endsWith("*") && tempStr.endsWith("/")) &&
+			!(tempStr.endsWith("+") || tempStr.endsWith("-") || tempStr.endsWith("*") || tempStr.endsWith("/")) &&
 			!(tempStr.endsWith("("));
 
 		return isTrue;
