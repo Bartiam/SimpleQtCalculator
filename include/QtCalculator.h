@@ -2,7 +2,7 @@
 #include <QString>
 #include <QRegExp>
 #include <QtWidgets/QLineEdit>
-#include <iostream>
+#include <QtScript/QScriptEngine>
 
 class QtCalculator : public QMainWindow
 {
@@ -13,6 +13,7 @@ public:
 
 	// Поле ввода.
 	QLineEdit* lineEdit;
+	QLineEdit* lineEdit_2;
 	
 
 public slots:
@@ -22,51 +23,71 @@ public slots:
 	// Методы ввода цифр;
 	void one() 
 	{
+		DeleteMessageERROR();
+
 		if (lineEdit->text().endsWith(")")) lineEdit->setText(lineEdit->text().append("*1"));
 		else lineEdit->setText(lineEdit->text().append("1"));
 	}
 	void two() 
 	{
+		DeleteMessageERROR();
+
 		if (lineEdit->text().endsWith(")")) lineEdit->setText(lineEdit->text().append("*2"));
 		else lineEdit->setText(lineEdit->text().append("2"));
 	}
 	void three() 
 	{ 
+		DeleteMessageERROR();
+
 		if (lineEdit->text().endsWith(")")) lineEdit->setText(lineEdit->text().append("*3"));
 		else lineEdit->setText(lineEdit->text().append("3"));
 	}
 	void four() 
 	{
+		DeleteMessageERROR();
+
 		if (lineEdit->text().endsWith(")")) lineEdit->setText(lineEdit->text().append("*4"));
 		else lineEdit->setText(lineEdit->text().append("4"));
 	}
 	void five()
 	{
+		DeleteMessageERROR();
+
 		if (lineEdit->text().endsWith(")")) lineEdit->setText(lineEdit->text().append("*5"));
 		else lineEdit->setText(lineEdit->text().append("5"));
 	}
 	void six()
 	{
+		DeleteMessageERROR();
+
 		if (lineEdit->text().endsWith(")")) lineEdit->setText(lineEdit->text().append("*6"));
 		else lineEdit->setText(lineEdit->text().append("6"));
 	}
 	void seven()
 	{
+		DeleteMessageERROR();
+
 		if (lineEdit->text().endsWith(")")) lineEdit->setText(lineEdit->text().append("*7"));
 		else lineEdit->setText(lineEdit->text().append("7"));
 	}
 	void eight()
 	{
+		DeleteMessageERROR();
+
 		if (lineEdit->text().endsWith(")")) lineEdit->setText(lineEdit->text().append("*8"));
 		else lineEdit->setText(lineEdit->text().append("8"));
 	}
 	void nine() 
 	{
+		DeleteMessageERROR();
+
 		if (lineEdit->text().endsWith(")")) lineEdit->setText(lineEdit->text().append("*9"));
 		else lineEdit->setText(lineEdit->text().append("9"));
 	}
 	void zero() 
 	{
+		DeleteMessageERROR();
+
 		if (lineEdit->text().endsWith(")")) lineEdit->setText(lineEdit->text().append("*0"));
 		else lineEdit->setText(lineEdit->text().append("0"));
 	}
@@ -74,6 +95,8 @@ public slots:
 	// Удаление последнего символа;
 	void deleteOneSymbol()
 	{
+		DeleteMessageERROR();
+
 		QString tempStr = lineEdit->text();
 		tempStr.chop(1);
 		lineEdit->setText(tempStr);
@@ -82,6 +105,8 @@ public slots:
 	// Операции с числами;
 	void plus()
 	{
+		DeleteMessageERROR();
+
 		if (checkArithmetic())
 		{
 			QString tempStr = lineEdit->text();
@@ -94,6 +119,8 @@ public slots:
 
 	void minus() 
 	{
+		DeleteMessageERROR();
+
 		if (checkArithmetic())
 		{
 			QString tempStr = lineEdit->text();
@@ -106,6 +133,8 @@ public slots:
 
 	void divide()
 	{
+		DeleteMessageERROR();
+
 		if (checkArithmetic() && !(lineEdit->text().endsWith("(")))
 		{
 			QString tempStr = lineEdit->text();
@@ -121,6 +150,8 @@ public slots:
 
 	void multiply()
 	{
+		DeleteMessageERROR();
+
 		if (checkArithmetic())
 		{
 			QString tempStr = lineEdit->text();
@@ -137,6 +168,8 @@ public slots:
 	// Метод отрицательного числа +/- ;
 	void plusMinus()
 	{
+		DeleteMessageERROR();
+
 		if (lineEdit->text().isEmpty())
 		{
 			lineEdit->setText(lineEdit->text().append("(-"));
@@ -183,12 +216,35 @@ public slots:
 	// Метод расчёта = ;
 	void equal()
 	{
-		std::cout << 9 * (((((+69))))) << std::endl;
+		DeleteMessageERROR();
+
+		if (lineEdit->text().isEmpty() || lineEdit->text().endsWith("+") || lineEdit->text().endsWith("*") 
+			|| lineEdit->text().endsWith("-") || lineEdit->text().endsWith("/") || lineEdit->text().endsWith("("))
+		{
+			lineEdit->setText("ERROR!");
+			return;
+		}
+
+		QRegExp regex("[\+\/\*\-]");
+		QStringList tempLst = lineEdit->text().split(regex);
+
+		QString temp = lineEdit->text().right(tempLst[tempLst.size()-1].size() + 1);
+
+		if (temp.startsWith("/") && tempLst[tempLst.size() - 1].toDouble() == 0)
+			lineEdit->setText("ERROR!");
+
+		QScriptEngine temp2;
+
+		long double equal = 0.0;
+
+		
 	};
 
 	// Метод , ;
 	void point()
 	{
+		DeleteMessageERROR();
+
 		if (lineEdit->text().isEmpty() || lineEdit->text().endsWith("-") || lineEdit->text().endsWith("(") ||
 			lineEdit->text().endsWith("+") || lineEdit->text().endsWith("*") || lineEdit->text().endsWith("/"))
 		{
@@ -209,6 +265,8 @@ public slots:
 	// Метод ввода () ;
 	void parenthesis()
 	{
+		DeleteMessageERROR();
+
 		QRegExp regex("[0-9]");
 		QString tempStr = lineEdit->text();
 		QString endSymbol;
@@ -232,6 +290,8 @@ private:
 
 		return false;
 	}
+
+	void DeleteMessageERROR() { if (lineEdit->text() == "ERROR!") lineEdit->clear(); }
 
 	bool rightParenthesis() const
 	{
