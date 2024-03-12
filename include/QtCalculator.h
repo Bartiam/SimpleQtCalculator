@@ -1,8 +1,9 @@
-﻿#include <QMainWindow>
+﻿#pragma once
+#include <QMainWindow>
 #include <QString>
 #include <QRegExp>
 #include <QtWidgets/QLineEdit>
-#include <QtScript/QScriptEngine>
+#include <stack>
 
 class QtCalculator : public QMainWindow
 {
@@ -216,8 +217,6 @@ public slots:
 	// Метод расчёта = ;
 	void equal()
 	{
-		DeleteMessageERROR();
-
 		if (lineEdit->text().isEmpty() || lineEdit->text().endsWith("+") || lineEdit->text().endsWith("*") 
 			|| lineEdit->text().endsWith("-") || lineEdit->text().endsWith("/") || lineEdit->text().endsWith("("))
 		{
@@ -225,19 +224,19 @@ public slots:
 			return;
 		}
 
-		QRegExp regex("[\+\/\*\-]");
-		QStringList tempLst = lineEdit->text().split(regex);
+		QRegExp regex1("[\+\/\*\-]");
 
-		QString temp = lineEdit->text().right(tempLst[tempLst.size()-1].size() + 1);
+		QStringList lstValues = lineEdit->text().split(regex1);
 
-		if (temp.startsWith("/") && tempLst[tempLst.size() - 1].toDouble() == 0)
+		QString temp = lineEdit->text().right(lstValues[lstValues.size()-1].size() + 1);
+
+		if (temp.startsWith("/") && lstValues[lstValues.size() - 1].toDouble() == 0)
+		{
 			lineEdit->setText("ERROR!");
+			return;
+		}
 
-		QScriptEngine temp2;
-
-		long double equal = 0.0;
-
-		
+		parseString();
 	};
 
 	// Метод , ;
@@ -302,5 +301,18 @@ private:
 			!(tempStr.endsWith("("));
 
 		return isTrue;
+	}
+
+	void parseString()
+	{
+		QString userExample = lineEdit->text();
+
+		std::stack<QChar> stackSymbols;
+		std::stack<double> stackValues;
+
+		for (int i = 0; i < userExample.length(); ++i)
+		{
+
+		}
 	}
 };
