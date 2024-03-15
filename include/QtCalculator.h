@@ -4,6 +4,7 @@
 #include <QRegExp>
 #include <QtWidgets/QLineEdit>
 #include <stack>
+#include <map>
 
 class QtCalculator : public QMainWindow
 {
@@ -236,7 +237,7 @@ public slots:
 			return;
 		}
 
-		parseString();
+		parseStringAndCalculate();
 	};
 
 	// Метод , ;
@@ -303,16 +304,68 @@ private:
 		return isTrue;
 	}
 
-	void parseString()
+	void parseStringAndCalculate()
 	{
-		QString userExample = lineEdit->text();
+		if (lineEdit->text() == "ERROR!") return;
 
-		std::stack<QChar> stackSymbols;
+		QString customExample = lineEdit->text();
+		QStringRef value;
+
+		std::stack<char> stackSymbols;
 		std::stack<double> stackValues;
 
-		for (int i = 0; i < userExample.length(); ++i)
-		{
+		short counter1 = 0;
+		short counter2 = 0;
 
+		long double equal = 0.0;
+
+		for (int i = 0; i <= customExample.length(); ++i)
+		{
+			if (customExample[i] >= "0" && customExample[i] <= "9" || customExample[i] == ".")
+			{
+				++counter1;
+			}
+			else
+			{
+				if (counter1 != 0)
+				{
+					value = QStringRef(&customExample, counter2, counter1);
+					counter1 = 0;
+					stackValues.push(value.toDouble());
+				}
+				counter2 = i + 1;
+
+
+
+				if (stackSymbols.empty() || stackSymbols.top() == '(' || stackSymbols.top() == ')')
+					stackSymbols.push(customExample[i].toLatin1());
+				else
+				{
+					short currentPrior;
+					short prevPrior;
+
+					chechPriority(customExample[i].toLatin1(), currentPrior);
+					chechPriority(stackSymbols.top(), prevPrior);
+				}
+			}
+		}
+	}
+
+	void chechPriority(const char symbol, short& prior)
+	{
+		switch (symbol)
+		{
+		case '+':
+			prior = 1;
+			break;
+		case '*':
+			prior = 2;
+			break;
+		case '-':
+			prior = 1;
+			break;
+		case '/':
+			prior = 2;
 		}
 	}
 };
