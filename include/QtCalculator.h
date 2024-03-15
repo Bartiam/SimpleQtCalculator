@@ -4,7 +4,6 @@
 #include <QRegExp>
 #include <QtWidgets/QLineEdit>
 #include <stack>
-#include <map>
 
 class QtCalculator : public QMainWindow
 {
@@ -15,7 +14,6 @@ public:
 
 	// Поле ввода.
 	QLineEdit* lineEdit;
-	QLineEdit* lineEdit_2;
 	
 
 public slots:
@@ -26,6 +24,7 @@ public slots:
 	void one() 
 	{
 		DeleteMessageERROR();
+		incorrectValue();
 
 		if (lineEdit->text().endsWith(")")) lineEdit->setText(lineEdit->text().append("*1"));
 		else lineEdit->setText(lineEdit->text().append("1"));
@@ -33,6 +32,7 @@ public slots:
 	void two() 
 	{
 		DeleteMessageERROR();
+		incorrectValue();
 
 		if (lineEdit->text().endsWith(")")) lineEdit->setText(lineEdit->text().append("*2"));
 		else lineEdit->setText(lineEdit->text().append("2"));
@@ -40,6 +40,7 @@ public slots:
 	void three() 
 	{ 
 		DeleteMessageERROR();
+		incorrectValue();
 
 		if (lineEdit->text().endsWith(")")) lineEdit->setText(lineEdit->text().append("*3"));
 		else lineEdit->setText(lineEdit->text().append("3"));
@@ -47,6 +48,7 @@ public slots:
 	void four() 
 	{
 		DeleteMessageERROR();
+		incorrectValue();
 
 		if (lineEdit->text().endsWith(")")) lineEdit->setText(lineEdit->text().append("*4"));
 		else lineEdit->setText(lineEdit->text().append("4"));
@@ -54,6 +56,7 @@ public slots:
 	void five()
 	{
 		DeleteMessageERROR();
+		incorrectValue();
 
 		if (lineEdit->text().endsWith(")")) lineEdit->setText(lineEdit->text().append("*5"));
 		else lineEdit->setText(lineEdit->text().append("5"));
@@ -61,6 +64,7 @@ public slots:
 	void six()
 	{
 		DeleteMessageERROR();
+		incorrectValue();
 
 		if (lineEdit->text().endsWith(")")) lineEdit->setText(lineEdit->text().append("*6"));
 		else lineEdit->setText(lineEdit->text().append("6"));
@@ -68,6 +72,7 @@ public slots:
 	void seven()
 	{
 		DeleteMessageERROR();
+		incorrectValue();
 
 		if (lineEdit->text().endsWith(")")) lineEdit->setText(lineEdit->text().append("*7"));
 		else lineEdit->setText(lineEdit->text().append("7"));
@@ -75,6 +80,7 @@ public slots:
 	void eight()
 	{
 		DeleteMessageERROR();
+		incorrectValue();
 
 		if (lineEdit->text().endsWith(")")) lineEdit->setText(lineEdit->text().append("*8"));
 		else lineEdit->setText(lineEdit->text().append("8"));
@@ -82,6 +88,7 @@ public slots:
 	void nine() 
 	{
 		DeleteMessageERROR();
+		incorrectValue();
 
 		if (lineEdit->text().endsWith(")")) lineEdit->setText(lineEdit->text().append("*9"));
 		else lineEdit->setText(lineEdit->text().append("9"));
@@ -89,6 +96,7 @@ public slots:
 	void zero() 
 	{
 		DeleteMessageERROR();
+		incorrectValue();
 
 		if (lineEdit->text().endsWith(")")) lineEdit->setText(lineEdit->text().append("*0"));
 		else lineEdit->setText(lineEdit->text().append("0"));
@@ -225,9 +233,9 @@ public slots:
 			return;
 		}
 
-		QRegExp regex1("[\+\/\*\-]");
+		QRegExp regex("[\+\/\*\-]");
 
-		QStringList lstValues = lineEdit->text().split(regex1);
+		QStringList lstValues = lineEdit->text().split(regex);
 
 		QString temp = lineEdit->text().right(lstValues[lstValues.size()-1].size() + 1);
 
@@ -237,7 +245,8 @@ public slots:
 			return;
 		}
 
-		parseStringAndCalculate();
+		if (lineEdit->text() == "ERROR!") return;
+		lineEdit->setText(parseStringAndCalculate());
 	};
 
 	// Метод , ;
@@ -304,24 +313,26 @@ private:
 		return isTrue;
 	}
 
-	void parseStringAndCalculate()
+	QString parseStringAndCalculate()
 	{
-		if (lineEdit->text() == "ERROR!") return;
-
 		QString customExample = lineEdit->text();
 		QStringRef value;
 
 		short counter1 = 0;
 		short counter2 = 0;
 
+		short currentPrior;
+		short prevPrior;
+
 		std::stack<QChar> stackSymbols;
 		std::stack<double> stackValues;
 
 		double equal = 0.0;
 
-		for (int i = 0; i <= customExample.length(); ++i)
+		for (int i = 0; i < customExample.length(); ++i)
 		{
-			if (customExample[i] >= "0" && customExample[i] <= "9" || customExample[i] == ".")
+			if ((customExample[i] >= "0" && customExample[i] <= "9") || (customExample[i] == ".") ||
+				(customExample[i - 1] == "(") && (customExample[i] == "-"))
 			{
 				++counter1;
 			}
@@ -337,30 +348,64 @@ private:
 
 
 
-				if (stackSymbols.empty() || stackSymbols.top() == '(' || stackSymbols.top() == ')' ||
-					customExample[i] == '(' || customExample[i] == ')')
+				if (stackSymbols.empty() || stackSymbols.top() == '(' || customExample[i] == '(')
 				{
 					stackSymbols.push(customExample[i]);
 				}
 				else
 				{
-					short currentPrior;
-					short prevPrior;
-
-					chechPriority(customExample[i], currentPrior);
-					chechPriority(stackSymbols.top(), prevPrior);
-
-					if (currentPrior > prevPrior)
+					if (customExample[i] == ")")
 					{
-						stackSymbols.push(customExample[i]);
+						while (stackSymbols.top() != "(")
+							{calculate(stackSymbols.top(), equal, stackSymbols, stackValues);}
+						stackSymbols.pop();
 					}
 					else
 					{
-						calculate(stackSymbols.top(), equal, stackSymbols, stackValues);
+						chechPriority(customExample[i], currentPrior);
+						chechPriority(stackSymbols.top(), prevPrior);
+
+						if (currentPrior > prevPrior)
+						{
+							stackSymbols.push(customExample[i]);
+						}
+						else
+						{
+							calculate(stackSymbols.top(), equal, stackSymbols, stackValues);
+
+							if (!stackSymbols.empty() && stackSymbols.top() != "(" && stackSymbols.top() != ")")
+							{
+								chechPriority(customExample[i], currentPrior);
+								chechPriority(stackSymbols.top(), prevPrior);
+
+								if (currentPrior == prevPrior)
+									calculate(stackSymbols.top(), equal, stackSymbols, stackValues);
+							}
+
+							stackSymbols.push(customExample[i]);
+						}
 					}
 				}
 			}
 		}
+
+		if (counter1 != 0)
+		{
+			value = QStringRef(&customExample, counter2, counter1);
+			stackValues.push(value.toDouble());
+		}
+
+		for (int i = 0; i != stackSymbols.size();)
+		{
+			if (stackSymbols.top() == "(")
+				stackSymbols.pop();
+			else
+			{
+				calculate(stackSymbols.top(), equal, stackSymbols, stackValues);
+			}
+		}
+
+		return QString::number(stackValues.top());
 	}
 
 	void chechPriority(const QChar symbol, short& prior)
@@ -381,7 +426,8 @@ private:
 		}
 	}
 
-	void calculate(const QChar symbol, double& equal, std::stack<QChar>& stackSymbols, std::stack<double>& stackValues)
+	void calculate(const QChar symbol, double& equal,
+		std::stack<QChar>& stackSymbols, std::stack<double>& stackValues)
 	{
 		double firstVal, secondVal;
 
@@ -395,14 +441,37 @@ private:
 		{
 		case '+':
 			equal = secondVal + firstVal;
-			lineEdit->setText(QString::number(equal));
+			stackValues.push(equal);
+			stackSymbols.pop();
 			break;
 		case '*':
+			equal = secondVal * firstVal;
+			stackValues.push(equal);
+			stackSymbols.pop();
 			break;
 		case '-':
+			equal = secondVal - firstVal;
+			stackValues.push(equal);
+			stackSymbols.pop();
 			break;
 		case '/':
+			equal = secondVal / firstVal;
+			stackValues.push(equal);
+			stackSymbols.pop();
 			break;
+		}
+	}
+
+	void incorrectValue()
+	{
+		QRegExp regex("[\-\+\*\/]");
+		QString tempStr = lineEdit->text();
+		QStringList tempLst = tempStr.split(regex);
+
+		if (tempLst[tempLst.size() - 1] == "0" && tempLst[tempLst.size() - 1].toDouble() == 0)
+		{
+			tempStr.chop(1);
+			lineEdit->setText(tempStr);
 		}
 	}
 };
