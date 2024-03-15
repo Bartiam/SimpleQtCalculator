@@ -311,13 +311,13 @@ private:
 		QString customExample = lineEdit->text();
 		QStringRef value;
 
-		std::stack<char> stackSymbols;
-		std::stack<double> stackValues;
-
 		short counter1 = 0;
 		short counter2 = 0;
 
-		long double equal = 0.0;
+		std::stack<QChar> stackSymbols;
+		std::stack<double> stackValues;
+
+		double equal = 0.0;
 
 		for (int i = 0; i <= customExample.length(); ++i)
 		{
@@ -337,23 +337,35 @@ private:
 
 
 
-				if (stackSymbols.empty() || stackSymbols.top() == '(' || stackSymbols.top() == ')')
-					stackSymbols.push(customExample[i].toLatin1());
+				if (stackSymbols.empty() || stackSymbols.top() == '(' || stackSymbols.top() == ')' ||
+					customExample[i] == '(' || customExample[i] == ')')
+				{
+					stackSymbols.push(customExample[i]);
+				}
 				else
 				{
 					short currentPrior;
 					short prevPrior;
 
-					chechPriority(customExample[i].toLatin1(), currentPrior);
+					chechPriority(customExample[i], currentPrior);
 					chechPriority(stackSymbols.top(), prevPrior);
+
+					if (currentPrior > prevPrior)
+					{
+						stackSymbols.push(customExample[i]);
+					}
+					else
+					{
+						calculate(stackSymbols.top(), equal, stackSymbols, stackValues);
+					}
 				}
 			}
 		}
 	}
 
-	void chechPriority(const char symbol, short& prior)
+	void chechPriority(const QChar symbol, short& prior)
 	{
-		switch (symbol)
+		switch (symbol.toLatin1())
 		{
 		case '+':
 			prior = 1;
@@ -366,6 +378,31 @@ private:
 			break;
 		case '/':
 			prior = 2;
+		}
+	}
+
+	void calculate(const QChar symbol, double& equal, std::stack<QChar>& stackSymbols, std::stack<double>& stackValues)
+	{
+		double firstVal, secondVal;
+
+		firstVal = stackValues.top();
+		stackValues.pop();
+
+		secondVal = stackValues.top();
+		stackValues.pop();
+
+		switch (symbol.toLatin1())
+		{
+		case '+':
+			equal = secondVal + firstVal;
+			lineEdit->setText(QString::number(equal));
+			break;
+		case '*':
+			break;
+		case '-':
+			break;
+		case '/':
+			break;
 		}
 	}
 };
