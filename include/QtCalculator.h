@@ -10,11 +10,10 @@ class QtCalculator : public QMainWindow
 	Q_OBJECT
 public:
 	// Конструктор класса.
-	QtCalculator(QWidget* parent) : QMainWindow(parent) {};
+	QtCalculator(QWidget* parent) : QMainWindow(parent) { };
 
 	// Поле ввода.
 	QLineEdit* lineEdit;
-	
 
 public slots:
 	// Удаление всех символов;
@@ -320,6 +319,7 @@ private:
 
 		short counter1 = 0;
 		short counter2 = 0;
+		short counterMinus = 0;
 
 		short currentPrior;
 		short prevPrior;
@@ -331,10 +331,16 @@ private:
 
 		for (int i = 0; i < customExample.length(); ++i)
 		{
-			if ((customExample[i] >= "0" && customExample[i] <= "9") || (customExample[i] == ".") ||
-				(customExample[i - 1] == "(") && (customExample[i] == "-"))
+			if ((customExample[i] >= "0" && customExample[i] <= "9") || (customExample[i] == "."))
 			{
 				++counter1;
+			}
+			else if (customExample[i] == "-" && customExample[i - 1] == "(")
+			{
+				++counterMinus;
+				if (counterMinus == 2) counterMinus = 0;
+
+				counter2 = i + 1;
 			}
 			else
 			{
@@ -342,13 +348,17 @@ private:
 				{
 					value = QStringRef(&customExample, counter2, counter1);
 					counter1 = 0;
-					stackValues.push(value.toDouble());
+					if (counterMinus != 0)
+						stackValues.push(value.toDouble() * -1);
+					else
+						stackValues.push(value.toDouble());
+
+					counterMinus = 0;
 				}
+
 				counter2 = i + 1;
 
-
-
-				if (stackSymbols.empty() || stackSymbols.top() == '(' || customExample[i] == '(')
+				if ((stackSymbols.empty() || stackSymbols.top() == '(' || customExample[i] == '(') && (customExample[i] != ")"))
 				{
 					stackSymbols.push(customExample[i]);
 				}
@@ -391,6 +401,7 @@ private:
 
 		if (counter1 != 0)
 		{
+			counter1 += counterMinus;
 			value = QStringRef(&customExample, counter2, counter1);
 			stackValues.push(value.toDouble());
 		}
