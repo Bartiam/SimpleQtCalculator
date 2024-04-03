@@ -1,9 +1,9 @@
-#include "QtCalculator.h"
+п»ї#include "QtCalculator.h"
 
-// Реализация конструктора класса;
+// Р РµР°Р»РёР·Р°С†РёСЏ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂР° РєР»Р°СЃСЃР°;
 QtCalculator::QtCalculator(QWidget* parent) : QMainWindow(parent){}
 
-// Реализация методов ввода чисел;
+// Р РµР°Р»РёР·Р°С†РёСЏ РјРµС‚РѕРґРѕРІ РІРІРѕРґР° С‡РёСЃРµР»;
 
 void QtCalculator::one()
 {
@@ -95,7 +95,7 @@ void QtCalculator::zero()
 	else lineEdit->setText(lineEdit->text().append("0"));
 }
 
-// Реализация метода удаления последнего символа;
+// Р РµР°Р»РёР·Р°С†РёСЏ РјРµС‚РѕРґР° СѓРґР°Р»РµРЅРёСЏ РїРѕСЃР»РµРґРЅРµРіРѕ СЃРёРјРІРѕР»Р°;
 void QtCalculator::deleteOneSymbol()
 {
 	DeleteMessageERROR();
@@ -105,7 +105,7 @@ void QtCalculator::deleteOneSymbol()
 	lineEdit->setText(tempStr);
 }
 
-// Реализация методов оперций с числами;
+// Р РµР°Р»РёР·Р°С†РёСЏ РјРµС‚РѕРґРѕРІ РѕРїРµСЂС†РёР№ СЃ С‡РёСЃР»Р°РјРё;
 void QtCalculator::plus()
 {
 	DeleteMessageERROR();
@@ -176,7 +176,7 @@ void QtCalculator::multiply()
 	}
 }
 
-// Реализация метода отрицательного числа +/-;
+// Р РµР°Р»РёР·Р°С†РёСЏ РјРµС‚РѕРґР° РѕС‚СЂРёС†Р°С‚РµР»СЊРЅРѕРіРѕ С‡РёСЃР»Р° +/-;
 void QtCalculator::plusMinus()
 {
 	DeleteMessageERROR();
@@ -223,7 +223,7 @@ void QtCalculator::plusMinus()
 	}
 }
 
-// Реализация метода =;
+// Р РµР°Р»РёР·Р°С†РёСЏ РјРµС‚РѕРґР° =;
 void QtCalculator::equal()
 {
 	if (lineEdit->text().isEmpty() || lineEdit->text().endsWith("+") || lineEdit->text().endsWith("*")
@@ -249,7 +249,7 @@ void QtCalculator::equal()
 	lineEdit->setText(parseStringAndCalculate());
 }
 
-// Реализация метода .;
+// Р РµР°Р»РёР·Р°С†РёСЏ РјРµС‚РѕРґР° .;
 void QtCalculator::point()
 {
 	DeleteMessageERROR();
@@ -271,7 +271,7 @@ void QtCalculator::point()
 	}
 }
 
-// Реализация метода ();
+// Р РµР°Р»РёР·Р°С†РёСЏ РјРµС‚РѕРґР° ();
 void QtCalculator::parenthesis()
 {
 	DeleteMessageERROR();
