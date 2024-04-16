@@ -56,6 +56,8 @@ public slots:
 	void parenthesis();
 
 private:
+	QRegExp* regex;
+
 	bool checkArithmetic() const;
 
 	void DeleteMessageERROR();

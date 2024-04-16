@@ -1,7 +1,7 @@
 ﻿#include "QtCalculator.h"
 
 // Реализация конструктора класса;
-QtCalculator::QtCalculator(QWidget* parent) : QMainWindow(parent){}
+QtCalculator::QtCalculator(QWidget* parent) : QMainWindow(parent) { regex = new QRegExp("[\+\/\*\-]"); }
 
 // Реализация методов ввода чисел;
 
@@ -187,11 +187,10 @@ void QtCalculator::plusMinus()
 	}
 	else
 	{
-		QRegExp regex("[\+\/\*\-]");
 		QRegExp regexVar("[0-9]");
 		QString tempStr = lineEdit->text();
 
-		QStringList tempLst = tempStr.split(regex);
+		QStringList tempLst = tempStr.split(*regex);
 		QString lastStr = tempLst[tempLst.size() - 1];
 
 		if (tempStr.right(2) == "(-")
@@ -233,9 +232,7 @@ void QtCalculator::equal()
 		return;
 	}
 
-	QRegExp regex("[\+\/\*\-]");
-
-	QStringList lstValues = lineEdit->text().split(regex);
+	QStringList lstValues = lineEdit->text().split(*regex);
 
 	QString temp = lineEdit->text().right(lstValues[lstValues.size() - 1].size() + 1);
 
@@ -263,8 +260,7 @@ void QtCalculator::point()
 		lineEdit->setText(lineEdit->text().append("*0."));
 	else
 	{
-		QRegExp regex("[\+\/\*\-]");
-		QStringList tempLst = lineEdit->text().split(regex);
+		QStringList tempLst = lineEdit->text().split(*regex);
 
 		if (!(tempLst[tempLst.size() - 1].contains(".")))
 			lineEdit->setText(lineEdit->text().append("."));
@@ -276,13 +272,12 @@ void QtCalculator::parenthesis()
 {
 	DeleteMessageERROR();
 
-	QRegExp regex("[0-9]");
 	QString tempStr = lineEdit->text();
 	QString endSymbol;
 	if (!tempStr.isEmpty()) endSymbol = tempStr[lineEdit->text().size() - 1];
 
 	if (rightParenthesis()) { lineEdit->setText(lineEdit->text().append(")")); }
-	else if (endSymbol.contains(regex) || endSymbol == ")" || endSymbol == ".") lineEdit->setText(lineEdit->text().append("*("));
+	else if (endSymbol.contains(*regex) || endSymbol == ")" || endSymbol == ".") lineEdit->setText(lineEdit->text().append("*("));
 	else lineEdit->setText(lineEdit->text().append("("));
 }
 
@@ -466,9 +461,8 @@ void QtCalculator::calculate(const QChar symbol, double& equal, std::stack<QChar
 
 void QtCalculator::incorrectValue()
 {
-	QRegExp regex("[\-\+\*\/]");
 	QString tempStr = lineEdit->text();
-	QStringList tempLst = tempStr.split(regex);
+	QStringList tempLst = tempStr.split(*regex);
 
 	if (tempLst[tempLst.size() - 1] == "0" && tempLst[tempLst.size() - 1].toDouble() == 0)
 	{
@@ -479,13 +473,12 @@ void QtCalculator::incorrectValue()
 
 bool QtCalculator::checkArithmetic() const
 {
-	QRegExp regex("[\-\+\*\/]");
 	QString tempStr = lineEdit->text();
 	QString endSymbol;
 
 	if (!tempStr.isEmpty()) endSymbol = tempStr[lineEdit->text().size() - 1];
 
-	if (endSymbol.contains(regex)) return true;
+	if (endSymbol.contains(*regex)) return true;
 
 	return false;
 }
